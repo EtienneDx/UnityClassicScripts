@@ -5,16 +5,16 @@ namespace EtienneDx.DayNightCycle
     public class Sun : MonoBehaviour, IDayNightCycle
     {
         [SerializeField]
-        private float dayDuration;
+        private float dayDuration = 600;
 
         [SerializeField]
-        private float nightDuration;
+        private float nightDuration = 600;
 
         [SerializeField]
         private float rotationOffset = -90;
 
         [SerializeField]
-        private float initialTime;
+        private float initialTime = 300;
 
         /// <summary>
         /// The total duration of a cycle (day + night)

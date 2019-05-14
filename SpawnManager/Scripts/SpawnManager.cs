@@ -23,7 +23,7 @@ namespace EtienneDx.SpawnManager
 
         [Header("Spawnable Entities")]
         [SerializeField]
-        SpawnableEntity[] spawnableEntities;
+        SpawnableEntity[] spawnableEntities = new SpawnableEntity[0];
 
         [Header("Region")]
         public float regionRadius;
