@@ -1,15 +1,19 @@
-﻿[System.Serializable]
-public class RangeFloat
+﻿
+namespace EtienneDx.Utils
 {
-    public float min;
-
-    public float max;
-
-    public float Random
+    [System.Serializable]
+    public class RangeFloat
     {
-        get
+        public float min;
+
+        public float max;
+
+        public float Random
         {
-            return UnityEngine.Random.Range(min, max);
+            get
+            {
+                return UnityEngine.Random.Range(min, max);
+            }
         }
     }
 }

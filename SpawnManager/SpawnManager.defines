@@ -1,0 +1,8 @@
+UMMORPG@enable
+This asset does not require ummorpg, but if used, just enable this to make it directly compatible.
+
+SIMPLE_WEATHER@enable
+Compatibility to day night weather asset
+
+UMMORPG_SEASONS_SUN@enable
+Compatibility with seasons sun addon

@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
-public class ObjectFinder<T> where T : Component
+namespace EtienneDx.Utils
 {
-    private T val;
-
-    public T Value
+    public class ObjectFinder<T> where T : Component
     {
-        get
+        private T val;
+
+        public T Value
         {
-            return val ?? (val = Object.FindObjectOfType<T>());
+            get
+            {
+                return val ?? (val = Object.FindObjectOfType<T>());
+            }
         }
-    }
 
-    public static implicit operator T(ObjectFinder<T> obj)
-    {
-        return obj.Value;
+        public static implicit operator T(ObjectFinder<T> obj)
+        {
+            return obj.Value;
+        }
     }
 }

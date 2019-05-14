@@ -1,13 +1,12 @@
 #define DEBUG
 
-using Assets.EtienneDx.ConfigFile.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.EtienneDx.ConfigFile
+namespace EtienneDx.ConfigFile
 {
     public static class ConfigFile
     {

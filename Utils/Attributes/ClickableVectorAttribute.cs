@@ -1,8 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class ClickableVectorAttribute : PropertyAttribute
+namespace EtienneDx.Utils
 {
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ClickableVectorAttribute : PropertyAttribute
+    {
 
+    }
 }

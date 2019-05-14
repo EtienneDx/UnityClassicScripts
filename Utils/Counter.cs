@@ -1,55 +1,59 @@
-﻿public class Counter
+﻿
+namespace EtienneDx.Utils
 {
-    public int stepsBeforeReset = 10;
-
-    private int steps = 0;
-    private readonly bool autoReset = true;
-
-    public Counter(int stepsBeforeReady, bool autoReset = true)
+    public class Counter
     {
-        stepsBeforeReset = stepsBeforeReady;
-        Reset();
-        this.autoReset = autoReset;
-    }
+        public int stepsBeforeReset = 10;
 
-    public int StepsLeft
-    {
-        get { return stepsBeforeReset - steps; }
-    }
+        private int steps = 0;
+        private readonly bool autoReset = true;
 
-    public int StepsDone
-    {
-        get { return steps; }
-    }
-
-    public float Progress
-    {
-        get
+        public Counter(int stepsBeforeReady, bool autoReset = true)
         {
-            return (float)steps / stepsBeforeReset;
+            stepsBeforeReset = stepsBeforeReady;
+            Reset();
+            this.autoReset = autoReset;
         }
-    }
 
-    public bool Ready
-    {
-        get
+        public int StepsLeft
         {
-            steps++;
-            if(steps >= stepsBeforeReset)
+            get { return stepsBeforeReset - steps; }
+        }
+
+        public int StepsDone
+        {
+            get { return steps; }
+        }
+
+        public float Progress
+        {
+            get
             {
-                if (autoReset)
-                {
-                    Reset();
-                }
-
-                return true;
+                return (float)steps / stepsBeforeReset;
             }
-            return false;
         }
-    }
 
-    public void Reset()
-    {
-        steps = 0;
+        public bool Ready
+        {
+            get
+            {
+                steps++;
+                if (steps >= stepsBeforeReset)
+                {
+                    if (autoReset)
+                    {
+                        Reset();
+                    }
+
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public void Reset()
+        {
+            steps = 0;
+        }
     }
 }

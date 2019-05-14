@@ -1,45 +1,48 @@
 ﻿using UnityEngine;
 
-public class TimeCounter
+namespace EtienneDx.Utils
 {
-    private float start;
-    private readonly float length;
-
-    public bool Ready
+    public class TimeCounter
     {
-        get
+        private float start;
+        private readonly float length;
+
+        public bool Ready
         {
-            return Time.time > start + length;
+            get
+            {
+                return Time.time > start + length;
+            }
         }
-    }
 
-    public float Progress
-    {
-        get
+        public float Progress
         {
-            return Ready || length == 0 ? 1 : (Time.time - start) / length;
+            get
+            {
+                return Ready || length == 0 ? 1 : (Time.time - start) / length;
+            }
         }
-    }
 
-    public float TimeLeft
-    {
-        get
+        public float TimeLeft
         {
-            return start + length - Time.time;
+            get
+            {
+                return start + length - Time.time;
+            }
         }
-    }
 
-    public TimeCounter(float length)
-    {
-        this.length = length;
-        if(length != 0)
+        public TimeCounter(float length)
         {
-            Reset();
+            this.length = length;
+            if (length != 0)
+            {
+                Reset();
+            }
         }
-    }
 
-    public void Reset()
-    {
-        start = Time.time;
+        public void Reset()
+        {
+            start = Time.time;
+        }
     }
 }

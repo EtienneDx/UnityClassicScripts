@@ -9,7 +9,7 @@ public static class SceneClickUtils
 
     static SceneClickUtils()
     {
-        SceneView.onSceneGUIDelegate += SceneGUI;
+        SceneView.duringSceneGui += SceneGUI;
     }
 
     private static void SceneGUI(SceneView v)
@@ -17,8 +17,7 @@ public static class SceneClickUtils
         if (nextClick != null && nextClick.GetInvocationList().Length > 0)
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
             {
-                RaycastHit hit;
-                if (Physics.Raycast(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition), out hit, 300))
+                if (Physics.Raycast(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition), out RaycastHit hit, 300))
                 {
                     nextClick(hit.point);
                     ClearNextClick();

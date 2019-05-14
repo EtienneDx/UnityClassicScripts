@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
 
-public class ComponentFinder<T> where T : Component
+namespace EtienneDx.Utils
 {
-    private MonoBehaviour b;
-
-    private T val;
-
-    public T Value
+    public class ComponentFinder<T> where T : Component
     {
-        get
+        private MonoBehaviour b;
+
+        private T val;
+
+        public T Value
         {
-            return val ?? (val = b.GetComponent<T>());
+            get
+            {
+                return val ?? (val = b.GetComponent<T>());
+            }
         }
-    }
 
-    public ComponentFinder(MonoBehaviour b)
-    {
-        this.b = b;
-    }
+        public ComponentFinder(MonoBehaviour b)
+        {
+            this.b = b;
+        }
 
-    public static implicit operator T(ComponentFinder<T> obj)
-    {
-        return obj.Value;
+        public static implicit operator T(ComponentFinder<T> obj)
+        {
+            return obj.Value;
+        }
     }
 }

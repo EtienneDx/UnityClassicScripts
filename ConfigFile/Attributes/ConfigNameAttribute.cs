@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.EtienneDx.ConfigFile.Attributes
+namespace EtienneDx.ConfigFile
 {
     public class ConfigNameAttribute : Attribute
     {

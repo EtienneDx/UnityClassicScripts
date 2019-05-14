@@ -1,4 +1,4 @@
-﻿namespace Assets.EtienneDx.ConfigFile
+﻿namespace EtienneDx.ConfigFile
 {
     public interface IConfigFile
     {
