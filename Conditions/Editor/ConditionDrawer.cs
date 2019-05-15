@@ -12,7 +12,7 @@ namespace EtienneDx.Conditions
         {
             int arrSize = property.FindPropertyRelative("conditions").arraySize;
             return EditorGUI.GetPropertyHeight(property.FindPropertyRelative("subConditions")) +
-                (arrSize + 2) * (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+                (arrSize + 4) * (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
             //return base.GetPropertyHeight(property, label);
         }
 
@@ -20,8 +20,14 @@ namespace EtienneDx.Conditions
         {
             EditorGUI.LabelField(GetRect(ref position), label, EditorStyles.boldLabel);
 
+            EditorGUI.PropertyField(GetRect(ref position), property.FindPropertyRelative("mode"), new GUIContent("Mode"));
+
             SerializedProperty subCond = property.FindPropertyRelative("subConditions");
-            EditorGUI.PropertyField(GetRect(ref position, EditorGUI.GetPropertyHeight(subCond)), subCond);
+            EditorGUI.PropertyField(GetRect(ref position, EditorGUI.GetPropertyHeight(subCond)), subCond, true);
+
+            EditorGUI.LabelField(GetRect(ref position), "Conditions");
+
+            position = EditorGUI.IndentedRect(position);
 
             SerializedProperty cond = property.FindPropertyRelative("conditions");
 
@@ -33,14 +39,29 @@ namespace EtienneDx.Conditions
 
                 Rect[] rects = GetControl(GetRect(ref position), 20, 5, 75);
 
-                int optionId = Array.IndexOf(possibleConditions, prop.stringValue);
-                optionId = EditorGUI.Popup(rects[2], optionId, possibleConditions);
-                prop.stringValue = possibleConditions[optionId];
+                if (possibleConditions.Any())
+                {
+
+                    int optionId = Array.IndexOf(possibleConditions, prop.stringValue);
+                    if (optionId < 0)
+                        optionId = 0;
+                    optionId = EditorGUI.Popup(rects[2], optionId, possibleConditions);
+                    prop.stringValue = possibleConditions[optionId];
+                }
+                else
+                {
+                    EditorGUI.LabelField(rects[2], "No existing condition");
+                }
 
                 if(GUI.Button(rects[0], "X"))
                 {
-                    // TODO: remove element(copy values and reduce size)
+                    cond.DeleteArrayElementAtIndex(i--);
                 }
+            }
+
+            if(GUI.Button(GetRect(ref position), "Add condition"))
+            {
+                cond.arraySize++;
             }
         }
 
@@ -49,7 +70,7 @@ namespace EtienneDx.Conditions
             if (height < 0)
                 height = EditorGUIUtility.singleLineHeight;
             Rect ret = new Rect(position.position, new Vector2(position.width, height));
-            position.x += height + EditorGUIUtility.standardVerticalSpacing;
+            position.y += height + EditorGUIUtility.standardVerticalSpacing;
             return ret;
         }
 

@@ -26,9 +26,12 @@ namespace EtienneDx.Conditions
         private static void Init()
         {
             conditions.Clear();
-            foreach (MethodInfo mi in AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).SelectMany(t => t.GetMethods(BindingFlags.Static))
-                .Where(mi => mi.GetCustomAttribute<ConditionAttribute>(true) != null && 
-                    !mi.IsAbstract && mi.ReturnType == typeof(bool) && !mi.GetParameters().Any()))
+            /*Debug.Log(AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).SelectMany(t => t.GetMethods()
+            .Where(mi => mi.IsStatic && mi.GetCustomAttribute<ConditionAttribute>(true) != null &&
+                    !mi.IsAbstract && mi.ReturnType == typeof(bool) && !mi.GetParameters().Any())).Count());*/
+            foreach (MethodInfo mi in AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).SelectMany(t => t.GetMethods()
+            .Where(mi => mi.IsStatic && mi.GetCustomAttribute<ConditionAttribute>(true) != null &&
+                    !mi.IsAbstract && mi.ReturnType == typeof(bool) && !mi.GetParameters().Any())))
             {
                 string conditionName = mi.GetCustomAttribute<ConditionAttribute>().conditionName;
                 if(conditions.ContainsKey(conditionName))

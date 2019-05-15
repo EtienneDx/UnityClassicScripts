@@ -1,14 +1,9 @@
-//All defines used in the script are stated here
-#define UMMORPG
+#define CONDITIONS
 
-//#define SIMPLE_WEATHER
-
-#define DAY_NIGHT_CYCLE
-
-#if DAY_NIGHT_CYCLE
-using EtienneDx.DayNightCycle;
-using EtienneDx.Utils;
+#if CONDITIONS
+using EtienneDx.Conditions;
 #endif
+using EtienneDx.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,53 +18,48 @@ namespace EtienneDx.SpawnManager
 
         [Header("Spawnable Entities")]
         [SerializeField]
-        SpawnableEntity[] spawnableEntities = new SpawnableEntity[0];
+        private SpawnableEntity[] spawnableEntities = new SpawnableEntity[0];
 
         [Header("Region")]
-        public float regionRadius;
+        [SerializeField]
+        private float regionRadius = 10;
 
-        public int maximumEntitiesAmount = 15;
+        [SerializeField]
+        private int maximumEntitiesAmount = 15;
 
-        public int spawnRate = 30;
+        [SerializeField]
+        private int spawnRate = 30;
 
-        public Transform regionEntityParent;
+        [SerializeField]
+        private Transform regionEntityParent = null;
 
         [Tooltip("This layerMask indicate the buildings under / over which an entity isn't allowed to spawn.\n" +
             "Eg. The buildings if they have an empty inside.")]
-        public LayerMask buildings;
+        [SerializeField]
+        private LayerMask buildings;
 
-#if SIMPLE_WEATHER || DAY_NIGHT_CYCLE
-        [Header("Spawn Conditions")]
+#if CONDITIONS
+        [SerializeField]
+        private Condition condition = new Condition();
 #endif
 
-#if DAY_NIGHT_CYCLE
-        public bool spawnDuringNight = true;
-
-        public bool spawnDuringDay = false;
-#endif
-#if SIMPLE_WEATHER
-    public bool spawnDuringRain = true;
-
-    public bool spawnDuringSun = false;
-#endif
         ///////////////Private////////////////////
 
         private List<ISpawnableEntity> entities = new List<ISpawnableEntity>();
 
         private Counter deathCheckCounter = new Counter(10);
 
-        private Counter spawnEntityCounter;
-
-#if DAY_NIGHT_CYCLE
-        private ObjectFinder<Sun> sun = new ObjectFinder<Sun>();
-#endif
-#if SIMPLE_WEATHER
-    private ObjectFinder<WeatherManager> weatherManager = new ObjectFinder<WeatherManager>();
-#endif
+        private Counter spawnEntityCounter = null;
 
         #endregion
 
         #region Functions
+
+        private void Awake()
+        {
+            if (regionEntityParent == null)
+                regionEntityParent = transform;
+        }
 
         private void Start()
         {
@@ -80,25 +70,11 @@ namespace EtienneDx.SpawnManager
         {
             if (deathCheckCounter.Ready)//We check deaths every 10 updates
                 CheckDeaths();
-
-            // TODO rework conditions
-            if (
-#if DAY_NIGHT_CYCLE
-            (((spawnDuringNight && sun.Value.IsNight) ||
-                (spawnDuringDay && sun.Value.IsDay))
-#if SIMPLE_WEATHER
-            &&
+#if CONDITIONS
+            if (condition.IsValid && spawnEntityCounter.Ready)//we check if we spawn a mob every "spawnRate" updates
+#else
+            if (spawnEntityCounter.Ready)
 #endif
-#endif
-#if SIMPLE_WEATHER
-            ((spawnDuringRain && weatherManager.Value.GetWeather() == Weather.RAIN) ||
-            (spawnDuringSun && weatherManager.Value.GetWeather() == Weather.SUN))
-#endif
-#if DAY_NIGHT_CYCLE
-            )
-#endif
-            &&
-                spawnEntityCounter.Ready)//we check if we spawn a mob every "spawnRate" updates
             {
                 SpawnEntity();
             }
@@ -106,7 +82,7 @@ namespace EtienneDx.SpawnManager
 
         private void SpawnEntity()
         {
-            if (Random.Range(0, maximumEntitiesAmount) > entities.Count)//The more monsters there is the less chance there is to spawn a mob
+            if (Random.Range(0, maximumEntitiesAmount) > entities.Count)//The more entities there is the less chance there is to spawn a mob
             {
                 float totalSpawnProbability = GetTotalProba();
                 float entityChoiceValue = Random.Range(0, totalSpawnProbability);
@@ -127,17 +103,11 @@ namespace EtienneDx.SpawnManager
                         newEntity.GetComponent<ISpawnableEntity>().SetRespawn(false);
                         entities.Add(newEntity.GetComponent<ISpawnableEntity>());
                         newEntity.GetComponent<ISpawnableEntity>().LinkToRegion();
-                        //NetworkServer.Spawn(newEntity);
-                        // had some problem about this, so I force it to true
-                        foreach (var re in newEntity.GetComponentsInChildren<Renderer>())
-                        {
-                            re.enabled = true;
-                        }
                     }
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogWarning("Unexcpected reaction while spawning a mob, passing for this time\nWarning infos : i = " + i +
+                    Debug.LogWarning("Unexpected reaction while spawning a mob, passing for this time\nWarning infos : i = " + i +
                         "\ntotalSpawnProba = " + totalSpawnProbability +
                         "\nmobChoiceValue = " + entityChoiceValue, this);
                     Debug.Log(e);
@@ -187,15 +157,20 @@ namespace EtienneDx.SpawnManager
             foreach (ISpawnableEntity e in entities)
             {
                 if (e.IsDead)
+                {
                     deadEntities.Add(e);
+                }
             }
             foreach (ISpawnableEntity e in deadEntities)
+            {
                 entities.Remove(e);
+                e.UnlinkToRegion();
+            }
         }
 
-        #endregion
+#endregion
 
-        #region Gizmos
+#region Gizmos
 
         void OnDrawGizmos()
         {
@@ -203,6 +178,6 @@ namespace EtienneDx.SpawnManager
             Gizmos.DrawWireSphere(transform.position, regionRadius);
         }
 
-        #endregion
+#endregion
     }
 }

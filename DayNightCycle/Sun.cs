@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using EtienneDx.Conditions;
+using System;
+using UnityEngine;
 
 namespace EtienneDx.DayNightCycle
 {
@@ -15,6 +17,9 @@ namespace EtienneDx.DayNightCycle
 
         [SerializeField]
         private float initialTime = 300;
+
+        [NonSerialized]
+        public static Sun instance = null;
 
         /// <summary>
         /// The total duration of a cycle (day + night)
@@ -49,6 +54,11 @@ namespace EtienneDx.DayNightCycle
             }
         }
 
+        private void Awake()
+        {
+            instance = this;
+        }
+
         private void Update()
         {
             float currentTime = initialTime + Time.time % DayLength;
@@ -63,6 +73,18 @@ namespace EtienneDx.DayNightCycle
                 transform.localRotation = Quaternion.Euler(0, rotationOffset + 180 + percent * 180, 0);
                 //transform.rotation = Quaternion.AngleAxis(180 + percent * 180, transform.up);
             }
+        }
+
+        [Condition("Is Day")]
+        public static bool IsInstanceDay()
+        {
+            return instance != null && instance.IsDay;
+        }
+
+        [Condition("Is Night")]
+        public static bool IsInstanceNight()
+        {
+            return instance != null && instance.IsNight;
         }
     }
 }
