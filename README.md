@@ -44,3 +44,40 @@ public class ConfigLogger : MonoBehaviour
     }
 }
 ```
+
+#### Condition System
+This asset adds the support for conditions for the different other assets from this pack. Said conditions are any world relative condition (or even player related, in case of ginleplayer games).
+
+To use it, just enable the 'Conditions' define using the Define Manager, and all the editor related features will get enabled directly. For example, the spawn manager will display a condition field. Conditions are an assembly of conditions defined in the code, and of composite conditions, themselves composed of both. You can also choose wether the condition should be true for any valid subcondition, or if all are valid. This system allows you to create complex conditions, without difficulty.
+
+From a code perspective, you can very easily use the condition for your own scripts : just create a `Condition` field, and verify wether it is valid : 
+
+```csharp
+public Condition myCondition;
+
+private void Update()
+{
+    if(myCondition.IsValid)
+    {
+        Debug.Log("The condition is valid");
+    }
+}
+```
+
+To create your own condition, you can simply use the following attribute on a static boolean function defined as follow :
+
+```csharp
+[Condition("Is Night")]
+public static bool IsInstanceNight()
+{
+    return instance != null && instance.IsNight;
+}
+```
+
+The function must be static, return a boolean and take no parameter.
+
+#### Spawn Manager
+The spawn manager allows you to create a spawn area, in which multiple entities can spawn onto the navmesh, with a spawn probability for each entity, a maximum amount of entities, etc...
+
+#### [WIP] Growable
+Still a work in progress
